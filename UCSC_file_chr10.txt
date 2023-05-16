@@ -1,4 +1,5 @@
-chrom       chromStart       chromEnd       name       score       value       exp       color       SourceChrom       SourceStart       SourcrEnd       SourceName       SourceStrand       targetChrom       targetStart       targetEnd       targetName       targetStrand
+track type=interact name="interact Example One" description="An interact file" interactDirectional=true maxHeightPixels=200:100:50 visibility=full
+#chrom       chromStart       chromEnd       name       score       value       exp       color       SourceChrom       SourceStart       SourcrEnd       SourceName       SourceStrand       targetChrom       targetStart       targetEnd       targetName       targetStrand
 chr1       4783813       4808780       .       11       11       .       0       chr1       4783813       4786144       .       .       chr1       4806710       4808780       .       .
 chr1       6252284       10227802       .       7       7       .       0       chr1       6252284       6252865       .       .       chr1       10227302       10227802       .       .
 chr1       7088787       7122369       .       7       7       .       0       chr1       7088787       7089851       .       .       chr1       7120653       7122369       .       .
