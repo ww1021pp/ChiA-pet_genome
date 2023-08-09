@@ -1,5 +1,6 @@
 ---
 attachments: [Clipboard_2023-05-22-11-18-54.png, Clipboard_2023-05-22-16-59-40.png]
+
 title: ChiA-PET V3 tools install
 created: '2023-05-22T14:20:57.210Z'
 modified: '2023-07-07T16:16:13.830Z'
@@ -45,7 +46,7 @@ $ unzip ChIA-PET_Tool_V3.zip
 
 
  ## pipeline of ChIA-PET
- ![](@attachment/Clipboard_2023-05-22-16-59-40.png)
+ ![](/attachment/Clipboard_2023-05-22-16-59-40.png)
 
 
  can uss "start_step" to choose corresponding steps
