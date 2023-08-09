@@ -1,0 +1,97 @@
+# ChiAPET PETs peak calling
+
+as all the downstream analysis were based on the *.bedpe.selected.unique.txt file, and this file is filter with low quanlity mapping and extract the uniqe alignment. So this file were used to do peaks callling.
+
+1. cd S1
+```
+mkdir Histone_peakscalling
+```
+2. extract self-ligand loop (intra-chrosome loop)
+```
+awk '$1==$4' *.bedpe.selected.unique.txt >./Histone_peakscalling/intra_selfloop.txt
+```
+
+3. split bedpe to bed file
+```
+cd Histone_peakscalling
+awk -F '\t' '{print $1"\t"$2"\t"$3"\n"$4"\t"$5"\t"$6}' intra_selfloop.txt >S1.selfloop.split.bed
+```
+4 make tagDirectory with bed file
+makeTagDirectory S1_selfligand S1.selfloop.split.bed -tbp 1
+
+
+
+
+###loops for step1 to step4 write a small script 
+ histone_tagdir.sh
+``` 
+#/usr/bin/bash
+sam=$1
+cd /workspace/rsrch2/panpanliu/23101-02_06302023_173816/combined_2_times/ChIAPET.Tool.V3
+cd $sam
+mkdir Histone_peakscalling
+awk '$1==$4' ${sam}.bedpe.selected.unique.txt >./Histone_peakscalling/intra_selfloop.txt
+cd Histone_peakscalling
+awk -F '\t' '{print $1"\t"$2"\t"$3"\n"$4"\t"$5"\t"$6}' intra_selfloop.txt >${sam}.selfloop.split.bed
+makeTagDirectory ${sam}_selfligand_TagDir ${sam}.selfloop.split.bed -tbp 1
+parallel execute histone_tagdir.sh
+```
+
+```
+cd /workspace/rsrch2/panpanliu/23101-02_06302023_173816/combined_2_times/ChIAPET.Tool.V3
+for sam in $(ls -d S*)
+do
+echo $sam
+echo "bash histone_tagdir.sh $sam" >>run_histone_tagdir.sh
+done
+
+parallel -j10 :::: run_histone_tagdir.sh
+```
+## call peaks with homer -style histone and default parameters
+```
+findPeaks ./S3_selfligand_TagDir/ -style histone -size 500 -minDist 1000 -o S3.histone_default.peakcalling.txt 
+```
+###############################same as default parameters##########
+S1/Histone_peakscalling/S1.histone_default.peakcalling.txt 181473
+S2/Histone_peakscalling/S2.histone_default.peakcalling.txt 150171
+S3/Histone_peakscalling/S3.histone_default.peakcalling.txt 150155
+S4/Histone_peakscalling/S4.histone_default.peakcalling.txt 176392
+S5/Histone_peakscalling/S5.histone_default.peakcalling.txt 153040
+S6/Histone_peakscalling/S6.histone_default.peakcalling.txt 139733
+S7/Histone_peakscalling/S7.histone_default.peakcalling.txt 152386
+S8/Histone_peakscalling/S8.histone_default.peakcalling.txt 161384
+
+```
+cat >../histone_tagdir.sh
+#/usr/bin/bash
+sam=$1
+cd /workspace/rsrch2/panpanliu/23101-02_06302023_173816/combined_2_times/ChIAPET.Tool.V3
+cd $sam
+#mkdir Histone_peakscalling
+#awk '$1==$4' ${sam}.bedpe.selected.unique.txt >./Histone_peakscalling/intra_selfloop.txt
+cd Histone_peakscalling
+#awk -F '\t' '{print $1"\t"$2"\t"$3"\n"$4"\t"$5"\t"$6}' intra_selfloop.txt >${sam}.selfloop.split.bed
+#makeTagDirectory ${sam}_selfligand_TagDir ${sam}.selfloop.split.bed -tbp 1
+#findPeaks ${sam}_selfligand_TagDir/ -style histone -size 500 -minDist 1000 -o ${sam}.histone_default.peakcalling.txt 
+#findPeaks ${sam}_selfligand_TagDir/ -style histone -size 1000 -minDist 2500 -o ${sam}.histone_size1k.peakcalling.txt
+findPeaks ${sam}_selfligand_TagDir/ -style histone -size 1000 -minDist 2500 -fdr 0.0001 -o ${sam}.histone_size1k.fdr0.0001.peakcalling.txt
+Ctrl+D
+```
+#######################fdr 1e-4 peak number################33
+S1/Histone_peakscalling/S1.histone_size1k.fdr0.0001.peakcalling.txt 60903
+S2/Histone_peakscalling/S2.histone_size1k.fdr0.0001.peakcalling.txt 54768
+S3/Histone_peakscalling/S3.histone_size1k.fdr0.0001.peakcalling.txt 53885
+S4/Histone_peakscalling/S4.histone_size1k.fdr0.0001.peakcalling.txt 57025
+S5/Histone_peakscalling/S5.histone_size1k.fdr0.0001.peakcalling.txt 46555
+S6/Histone_peakscalling/S6.histone_size1k.fdr0.0001.peakcalling.txt 50825
+S7/Histone_peakscalling/S7.histone_size1k.fdr0.0001.peakcalling.txt 47234
+S8/Histone_peakscalling/S8.histone_size1k.fdr0.0001.peakcalling.txt 55206
+
+parallel -j10 :::: run_histone_tagdir.sh
+
+## snp overlap with ChIAPET histone peakcalling (peaks +-500bp/1kb)
+
+##
+
+
+
