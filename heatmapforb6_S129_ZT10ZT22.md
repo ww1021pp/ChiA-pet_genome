@@ -28,7 +28,8 @@ annotatePeaks.pl B6S129_ZT10ZT22.merged.peak mm10 -d ../S1/Histone_peakscalling/
 
 ## step 4: seek for the peaks for B6 ZT10vsZT22 >2 with R
 /workspace/rsrch2/panpanliu/23101-02_06302023_173816/combined_2_times/ChIAPET.Tool.V3/heatmap_ZT10vsZT22/scripts/filte_peaks_withcondition.R
-``rm(list = ls())
+```
+rm(list = ls())
 wd="/workspace/rsrch2/panpanliu/23101-02_06302023_173816/combined_2_times/ChIAPET.Tool.V3/heatmap_ZT10vsZT22"
 setwd(wd)
 
