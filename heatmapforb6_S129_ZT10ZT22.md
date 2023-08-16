@@ -144,4 +144,34 @@ ggplot(data_plot, aes(x=Distance, y=Coverage, group=Condition))+
 
 ggsave("ZT10vsZT22_up_signal.pdf",width = 4,height = 4)
 ```
+### plot down signal file
+```
+rm(list = ls())
 
+wd="/workspace/rsrch2/panpanliu/23101-02_06302023_173816/combined_2_times/ChIAPET.Tool.V3/heatmap_ZT10vsZT22/plots_file/"
+setwd(wd)
+
+library(reshape2)
+library(ggplot2)
+
+data<-read.delim("B6S129_ZT10vs22_down_FC2.4kb.signal.txt",stringsAsFactors = F)
+
+data_plot<-data[,c(1,grep("Coverage",colnames(data)))];head(data_plot)
+
+colnames(data_plot)=c("Distance","B6_NC_ZT10","B6_NC_ZT22","Sv_NC_ZT10","Sv_NC_ZT22");head(data_plot)
+
+data_plot<-melt(data_plot, id = "Distance", variable.name = "Condition",value.name = "Coverage")
+data_plot$Condition=as.factor(data_plot$Condition)
+
+ggplot(data_plot, aes(x=Distance, y=Coverage, group=Condition))+
+    geom_line(aes(color=Condition))+
+    scale_x_continuous(breaks=seq(-2000,2000,1000))+
+    scale_y_continuous(breaks=seq(0,3,0.5))+
+    scale_color_manual(values=c("grey", "green", "blue","red"))+
+   labs(title = "signal Plotfile of ZT10vsZT22 down peaks", x="Distance from peaks",y="signal value") +
+   theme(legend.position="upper", legend.direction="horizontal",
+        legend.title = element_blank())+
+   theme_classic()
+
+ggsave("ZT10vsZT22_down_signal.pdf",width = 4,height = 4)
+```
