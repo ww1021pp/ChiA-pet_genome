@@ -34,9 +34,10 @@ wd="/workspace/rsrch2/panpanliu/23101-02_06302023_173816/combined_2_times/ChIAPE
 setwd(wd)
 
 peak_ann<-read.delim("B6S129_ZT10ZT22.mergedpeaks.annotate.txt",stringsAsFactors = F)
+
 colnames(peak_ann)[1]="PeakID"
 colnames(peak_ann)[20:23]=c("S1_B6NC_ZT10","S2_B6NC_ZT22","S5_S129NC_ZT10","S6_S129NC_ZT22")
-
+row.names(peak_ann)=peak_ann$PeakID
 dim(peak_ann)
 ##70784    23
 library(dplyr)
@@ -44,22 +45,21 @@ library(dplyr)
 peak_ann<-filter(peak_ann,Gene.Name !="")
 
 #filter with lowest tag counts
-tag_count=0
+tag_count=5
 
 peak_ann <- peak_ann %>%
-            filter(S1_B6NC_ZT10 > tag_count & 
-                   S2_B6NC_ZT22 > tag_count &
-                   S5_S129NC_ZT10 > tag_count &
-                   S6_S129NC_ZT22 > tag_count)
+            filter((S1_B6NC_ZT10 > tag_count & S2_B6NC_ZT22 > tag_count) |
+                   (S5_S129NC_ZT10 > tag_count &
+                   S6_S129NC_ZT22 > tag_count))
 
 FC=2
 #############combined file#######33
 peak_ZT10vsZT22_down_FC2 <- peak_ann %>%
   filter(S2_B6NC_ZT22/S1_B6NC_ZT10 <= 1/FC | S6_S129NC_ZT22/S5_S129NC_ZT10 <= 1/FC)
-peak_ZT10vsZT22_add_FC4 <- peak_ann %>%
+peak_ZT10vsZT22_add_FC2 <- peak_ann %>%
   filter(S2_B6NC_ZT22/S1_B6NC_ZT10 >=FC | S6_S129NC_ZT22/S5_S129NC_ZT10 >=FC)
-write.table(peak_ZT10vsZT22_add_FC2,"B6S129_ZT10vs22_upFC2.txt",sep = "\t",quote = F,na="", row.names = F)
-write.table(peak_ZT10vsZT22_down_FC2,"B6S129_ZT10vs22_downFC2.txt",sep = "\t",quote = F,na="", row.names = F)
+write.table(peak_ZT10vsZT22_add_FC2,"B6S129_ZT10vs22_upFC2mintag5.txt",sep = "\t",quote = F,na="", row.names = F)
+write.table(peak_ZT10vsZT22_down_FC2,"B6S129_ZT10vs22_downFC2mintag5.txt",sep = "\t",quote = F,na="", row.names = F)
 
 
 ## seperate into different file#########
@@ -81,28 +81,28 @@ row.names(S129_down_FC2)=S129_down_FC2$PeakID
 
 ###############up peaks for common, specific peak#####3
 common <- intersect(B6_add_FC2$PeakID,S129_add_FC2$PeakID)
-length(common) ##200
+length(common) ##398
 B6_up_spe <-setdiff(B6_add_FC2$PeakID,S129_add_FC2$PeakID)
-length(B6_up_spe) ##1066
+length(B6_up_spe) ##1700
 S129_up_spe <- setdiff(S129_add_FC2$PeakID,B6_add_FC2$PeakID)
-length(S129_up_spe) ## 2622
+length(S129_up_spe) ## 7170
 
-write.table(B6_add_FC2[common,c(1:4)],"./plots_file/up_Z10vs22_common.peak",sep = "\t",quote = F, row.names = F,col.names = F)
-write.table(peak_ann[B6_up_spe,c(1:4)],"./plots_file/up_Z10vs22_B6_spe.peak",sep = "\t",quote = F, row.names = F,col.names = F)
-write.table(peak_ann[S129_up_spe,c(1:4)],"./plots_file/up_Z10vs22_S129_spe.peak",sep = "\t",quote = F, row.names = F,col.names = F)
+write.table(B6_add_FC2[common,],"./plots_file/up_Z10vs22_common.peak",sep = "\t",quote = F, row.names = F,col.names = F)
+write.table(peak_ann[B6_up_spe,],"./plots_file/up_Z10vs22_B6_spe.peak",sep = "\t",quote = F, row.names = F,col.names = F)
+write.table(peak_ann[S129_up_spe,],"./plots_file/up_Z10vs22_S129_spe.peak",sep = "\t",quote = F, row.names = F,col.names = F)
 
 
 #######################down ZT10vsZT22 in B6 and S129 common, specific
 common_down <- intersect(B6_down_FC2$PeakID,S129_down_FC2$PeakID)
-length(common_down) ##33
+length(common_down) ##199
 B6_down_spe <-setdiff(B6_down_FC2$PeakID,S129_down_FC2$PeakID)
-length(B6_down_spe) ##372
+length(B6_down_spe) ##1558
 S129_down_spe <- setdiff(S129_down_FC2$PeakID,B6_down_FC2$PeakID)
 length(S129_down_spe) ## 2259
 
-write.table(peak_ann[common_down,c(1:4)],"./plots_file/down_Z10vs22_common.peak",sep = "\t",quote = F, row.names = F,col.names = F)
-write.table(peak_ann[B6_down_spe,c(1:4)],"./plots_file/down_Z10vs22_B6_spe.peak",sep = "\t",quote = F, row.names = F,col.names = F)
-write.table(peak_ann[S129_down_spe,c(1:4)],"./plots_file/down_Z10vs22_S129_spe.peak",sep = "\t",quote = F, row.names = F,col.names = F)`
+write.table(peak_ann[common_down,],"./plots_file/down_Z10vs22_common.peak",sep = "\t",quote = F, row.names = F,col.names = F)
+write.table(peak_ann[B6_down_spe,],"./plots_file/down_Z10vs22_B6_spe.peak",sep = "\t",quote = F, row.names = F,col.names = F)
+write.table(peak_ann[S129_down_spe,],"./plots_file/down_Z10vs22_S129_spe.peak",sep = "\t",quote = F, row.names = F,col.names = F)
 
 ```
 
