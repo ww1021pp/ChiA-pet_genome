@@ -48,7 +48,7 @@ peak_ann<-filter(peak_ann,Gene.Name !="")
 tag_count=5
 
 peak_ann <- peak_ann %>%
-            filter((S1_B6NC_ZT10 > tag_count & S2_B6NC_ZT22 > tag_count) |
+            filter((S1_B6NC_ZT10 > tag_count & S2_B6NC_ZT22 > tag_count) &
                    (S5_S129NC_ZT10 > tag_count &
                    S6_S129NC_ZT22 > tag_count))
 
