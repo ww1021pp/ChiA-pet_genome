@@ -5,8 +5,8 @@ for i in $(ls S*_hic1.hic)
 do
 echo $i
 sample=`basename $i _hic1.hic`
-#fanc from-juicer --no-inter-chromosomal --juicer-tools-jar ~/Software/Juicebox/juicer_tools_1.22.01.jar $i /home/chunjie/Documents/RefGenome/mm10/nochr.GRCm38_mm10.normalChr.cp.fa 10000 ./fanc_hic/${sample}_fanc_10kb.hic ## make sure the chromosome in genome file is the same in hic file.
-#fanc hic -m ICE -n ./fanc_hic/${sample}_fanc_10kb.hic ./fanc_hic/${sample}_fanc_iced_norm_10kb.hic -b 10kb
+fanc hic -m ICE -n ${i}@100kb ./fanc_hic/${sample}_iced_fromjuicer_100kb.hic -b 100000 --deepcopy
+fanc hic -m ICE -n ${i}@50kb ./fanc_hic/${sample}_iced_fromjuicer_50kb.hic -b 50000 --deepcopy
 fanc hic -m ICE -n ${i}@5kb ./fanc_hic/${sample}_iced_fromjuicer_5kb.hic -b 5000 --deepcopy
 done
 
